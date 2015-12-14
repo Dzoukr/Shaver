@@ -1,0 +1,4 @@
+NUGET
+  remote: http://nuget.org/api/v2
+  specs:
+    FAKE (4.7.2)
