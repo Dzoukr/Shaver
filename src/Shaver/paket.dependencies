@@ -1,0 +1,4 @@
+source https://nuget.org/api/v2
+nuget Suave
+nuget Suave.Razor
+nuget FSharp.Data
