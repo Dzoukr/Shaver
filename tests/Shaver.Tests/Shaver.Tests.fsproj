@@ -58,17 +58,23 @@
   </Target>
   -->
   <ItemGroup>
-    <None Include="page.html">
+    <None Include="partialTwo.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="masterPage.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="paket.references" />
     <None Include="paket.dependencies" />
     <Compile Include="AssemblyInfo.fs" />
-    <None Include="Views\page.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="Razor.fs" />
     <Content Include="App.config" />
+    <None Include="page.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="partialOne.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
