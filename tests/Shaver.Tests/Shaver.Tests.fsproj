@@ -5,14 +5,15 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>7d4f9de5-1e01-4460-bba8-bdf66ae61895</ProjectGuid>
+    <ProjectGuid>b5a44c36-5ff8-40ac-96d4-06b907f51e9f</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Shaver</RootNamespace>
-    <AssemblyName>Shaver</AssemblyName>
+    <RootNamespace>Shaver.Tests</RootNamespace>
+    <AssemblyName>Shaver.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>Shaver</Name>
+    <Name>Shaver.Tests</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +23,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Shaver.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Shaver.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,23 +32,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Shaver.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Shaver.Tests.XML</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
-    <None Include="paket.dependencies" />
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Razor.fs" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -71,29 +57,57 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="page.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="paket.references" />
+    <None Include="paket.dependencies" />
+    <Compile Include="AssemblyInfo.fs" />
+    <None Include="Views\page.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Razor.fs" />
+    <Content Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\..\src\Shaver\Shaver.fsproj">
+      <Name>Shaver</Name>
+      <Project>{7d4f9de5-1e01-4460-bba8-bdf66ae61895}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
       <ItemGroup>
-        <Reference Include="FSharp.Data">
-          <HintPath>packages\FSharp.Data\lib\net40\FSharp.Data.dll</HintPath>
+        <Reference Include="FsUnit.NUnit">
+          <HintPath>packages\FsUnit\lib\net45\FsUnit.NUnit.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
-        <Reference Include="System.Xml.Linq">
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETCore') Or ($(TargetFrameworkIdentifier) == 'Silverlight' And $(TargetFrameworkVersion) == 'v5.0') Or ($(TargetFrameworkIdentifier) == 'WindowsPhone' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac') Or ($(TargetFrameworkProfile) == 'Profile5') Or ($(TargetFrameworkProfile) == 'Profile6') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile14') Or ($(TargetFrameworkProfile) == 'Profile19') Or ($(TargetFrameworkProfile) == 'Profile24') Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile37') Or ($(TargetFrameworkProfile) == 'Profile42') Or ($(TargetFrameworkProfile) == 'Profile44') Or ($(TargetFrameworkProfile) == 'Profile47') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78') Or ($(TargetFrameworkProfile) == 'Profile147') Or ($(TargetFrameworkProfile) == 'Profile158')">
-      <ItemGroup>
-        <Reference Include="FSharp.Data">
-          <HintPath>packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
+        <Reference Include="NHamcrest">
+          <HintPath>packages\FsUnit\lib\net45\NHamcrest.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Reference Include="Fuchu">
+      <HintPath>packages\Fuchu\lib\Fuchu.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
       <ItemGroup>
@@ -105,6 +119,13 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>packages\NUnit\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0')">
       <ItemGroup>
@@ -148,10 +169,10 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="($(TargetFrameworkProfile) == 'Profile5') Or ($(TargetFrameworkProfile) == 'Profile6') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile14') Or ($(TargetFrameworkProfile) == 'Profile19') Or ($(TargetFrameworkProfile) == 'Profile24') Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile32') Or ($(TargetFrameworkProfile) == 'Profile37') Or ($(TargetFrameworkProfile) == 'Profile42') Or ($(TargetFrameworkProfile) == 'Profile44') Or ($(TargetFrameworkProfile) == 'Profile47') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78') Or ($(TargetFrameworkProfile) == 'Profile84') Or ($(TargetFrameworkProfile) == 'Profile92') Or ($(TargetFrameworkProfile) == 'Profile102') Or ($(TargetFrameworkProfile) == 'Profile111') Or ($(TargetFrameworkProfile) == 'Profile136') Or ($(TargetFrameworkProfile) == 'Profile147') Or ($(TargetFrameworkProfile) == 'Profile151') Or ($(TargetFrameworkProfile) == 'Profile157') Or ($(TargetFrameworkProfile) == 'Profile158') Or ($(TargetFrameworkProfile) == 'Profile225') Or ($(TargetFrameworkProfile) == 'Profile240') Or ($(TargetFrameworkProfile) == 'Profile255') Or ($(TargetFrameworkProfile) == 'Profile259') Or ($(TargetFrameworkProfile) == 'Profile328') Or ($(TargetFrameworkProfile) == 'Profile336') Or ($(TargetFrameworkProfile) == 'Profile344')">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
       <ItemGroup>
-        <Reference Include="Zlib.Portable">
-          <HintPath>packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+        <Reference Include="Suave.Testing">
+          <HintPath>packages\Suave.Testing\lib\net40\Suave.Testing.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

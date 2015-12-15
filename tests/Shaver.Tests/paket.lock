@@ -1,0 +1,23 @@
+NUGET
+  remote: https://nuget.org/api/v2
+  specs:
+    FSharp.Core (4.0.0.1)
+    FsUnit (1.4.1.0)
+      FSharp.Core (>= 3.1.2.5)
+      NUnit (2.6.4)
+    Fuchu (0.6.0)
+    Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
+    NUnit (2.6.4)
+    RazorEngine (3.7.5)
+      Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
+      Microsoft.AspNet.Razor (2.0.30506.0) - framework: net40
+    Suave (0.33.0)
+      FSharp.Core (>= 3.1.2.5)
+    Suave.Razor (0.33.0)
+      FSharp.Core (>= 3.1.2.5)
+      RazorEngine (>= 3.7.3)
+      Suave (>= 0.33.0)
+    Suave.Testing (0.33.0)
+      FSharp.Core (>= 3.1.2.5)
+      Fuchu (>= 0.6.0)
+      Suave (>= 0.33.0)
