@@ -68,6 +68,7 @@
     <None Include="paket.dependencies" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Razor.fs" />
+    <Compile Include="Localization.fs" />
     <Content Include="App.config" />
     <None Include="page.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

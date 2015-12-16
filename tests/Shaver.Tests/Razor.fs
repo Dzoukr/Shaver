@@ -11,8 +11,10 @@ open Suave.Testing
 open Suave.Razor
 open Suave.Http.Successful
 open Shaver
+open System
+open System.IO
 
-let path = System.Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)).AbsolutePath.Replace("/","\\")
+let path = Uri(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)).AbsolutePath.Replace("/","\\")
 let runWithConfig = runWith { defaultConfig with homeFolder = Some(path) }
 
 type ModelMaster = { Master : string }
