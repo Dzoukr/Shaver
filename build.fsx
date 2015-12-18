@@ -1,25 +1,135 @@
 // include Fake lib
 #r @"packages\FAKE\tools\FakeLib.dll"
-open Fake
+
+open System
+open System.IO
+open Fake 
+open Fake.AssemblyInfoFile
+
+RestorePackages()
 
 // Directories
-let buildDir = "./build/"
-let projectDir = "./src/TestFx/"
-let debugDir = projectDir + "bin/Debug/"
-let wwwBuildDir = projectDir + ".wwwbuild/"
+let buildAppDir = "./build/app/"
+let buildTestDir = "./build/tests/"
+let appSrcDir = "./src/Shaver/"
+let testSrcDir = "./tests/Shaver.Tests/"
+let nugetBinDir = "./nuget/bin/"
+
+// --------------------------------------------------------------------------------------
+// Information about the project to be used at NuGet and in AssemblyInfo files
+// --------------------------------------------------------------------------------------
+
+let project = "Shaver"
+let title = "Shaver"
+let authors = ["Roman Provaznik"]
+let summary = "Lightweight templating library for Suave.io"
+let description = """
+  FILL ME"""
+let tags = "F# fsharp suave razor templating http web localization"
+
+// Read release notes & version info from RELEASE_NOTES.md
+let release = File.ReadLines "RELEASE_NOTES.md" |> ReleaseNotesHelper.parseReleaseNotes
+
+
 
 // Targets
 Target "?" (fun _ ->
-    printfn ""
-    printfn "  Please specify the target by calling 'build <Target>'"
-    printfn ""
-    printfn "  Building:"
-    printfn "  * TODO"
-    printfn ""
-    printfn "  Releasing:"
-    printfn "  * Nuget"
-    printfn ""
+    printfn " *********************************************************"
+    printfn " *        Avaliable options (call 'build <Targer>')      *"
+    printfn " *********************************************************"
+    printfn " [Build]"
+    printfn "  > BuildApp"
+    printfn "  > BuildTests"
+    printfn " "
+    printfn " [Tests]"
+    printfn "  > RunTests"
+    printfn " "
+    printfn " [Release]"
+    printfn "  > Nuget"
+    printfn " "
+    printfn " *********************************************************"
 )
+
+Target "Nuget" <| fun () ->
+    
+    CreateDir nugetBinDir
+    let nugetFiles = ["Shaver.dll";"Shaver.xml";"Shaver.pdb"]
+    nugetFiles |> List.map (fun f -> buildAppDir + f) |> CopyFiles nugetBinDir
+    
+    // Format the release notes
+    let releaseNotes = release.Notes |> String.concat "\n"
+    NuGet (fun p -> 
+        { p with   
+            Authors = authors
+            Project = project
+            Summary = summary
+            Description = description
+            Version = release.NugetVersion
+            ReleaseNotes = releaseNotes
+            Tags = tags
+            OutputPath = nugetBinDir
+            AccessKey = getBuildParamOrDefault "key" ""
+            Publish = hasBuildParam "publish"
+            References = ["Shaver.dll"]
+            Files = nugetFiles |> List.map (fun f -> ("bin/" + f, Some("lib/net45"), None))
+            Dependencies =
+            [
+                "Suave", GetPackageVersion (appSrcDir + "./packages") "Suave"
+                "Suave.Razor", GetPackageVersion (appSrcDir + "./packages") "Suave.Razor"
+                "FSharp.Data", GetPackageVersion (appSrcDir + "./packages") "FSharp.Data"
+                "FSharp.Core", GetPackageVersion (appSrcDir + "./packages") "FSharp.Core"
+            ]
+        })
+        "nuget/Shaver.nuspec"
+
+Target "AssemblyInfo" <| fun () ->
+    for file in !! (appSrcDir + "AssemblyInfo*.fs") do
+        let version = release.AssemblyVersion
+        CreateFSharpAssemblyInfo file
+           [ Attribute.Title title
+             Attribute.Product project
+             Attribute.Description summary
+             Attribute.Version version
+             Attribute.FileVersion version]
+
+Target "CleanApp" (fun _ ->
+    CleanDir buildAppDir
+)
+
+Target "CleanTests" (fun _ ->
+    CleanDir buildAppDir
+)
+
+Target "CleanNugetBin" (fun _ ->
+    CleanDir nugetBinDir
+)
+
+Target "BuildApp" (fun _ ->
+   !! (appSrcDir + "**/*.fsproj")
+     |> MSBuildRelease buildAppDir "Build"
+     |> Log "AppBuild-Output: "
+)
+
+Target "BuildTests" (fun _ ->
+    !! (testSrcDir + "**/*.fsproj")
+      |> MSBuildDebug buildTestDir "Build"
+      |> Log "TestBuild-Output: "
+)
+
+Target "RunTests" (fun _ ->
+    !! (buildTestDir + "/Shaver.Tests.dll")
+      |> NUnit (fun p ->
+          {p with
+             DisableShadowCopy = true;
+             OutputFile = buildTestDir + "TestResults.xml" })
+)
+
+
+// Dependencies
+"CleanApp" ==> "AssemblyInfo" ==> "BuildApp"
+"CleanTests" ==> "BuildTests"
+"BuildApp"  ==> "BuildTests"  ==> "RunTests"
+"CleanNugetBin" ==> "BuildApp" ==> "Nuget"
 
 // start build
 RunTargetOrDefault "?"

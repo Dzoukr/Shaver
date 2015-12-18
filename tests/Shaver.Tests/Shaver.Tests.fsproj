@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Shaver.Tests</RootNamespace>
     <AssemblyName>Shaver.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>Shaver.Tests</Name>

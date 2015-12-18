@@ -17,7 +17,7 @@ type ModelTwo = { Two : string }
 
 [<Test>]
 let ``Single page should compile with model data`` () =
-    Razor.page HTTP_200 "page.html" { Master = "Hello Razor"}
+    Razor.singlePage "page.html" { Master = "Hello Razor"}
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "<h1>Hello Razor</h1>"
@@ -28,7 +28,7 @@ let ``Master page using empties should compile with empty sections`` () =
         ("SectionOne", Razor.empty);
         ("SectionTwo", Razor.empty)
     ] 
-    |> Razor.masterPage HTTP_200 "masterPage.html" { Master = "Hello Master"}
+    |> Razor.masterPage "masterPage.html" { Master = "Hello Master"}
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "Hello Master<br/>"
@@ -40,7 +40,7 @@ let ``Master page using partials should compile with filled sections`` () =
         ("SectionOne", Razor.partial "partialOne.html" { One = "Hello One" });
         ("SectionTwo", Razor.partial "partialTwo.html" { Two = "Hi Two" })
     ] 
-    |> Razor.masterPage HTTP_200 "masterPage.html" { Master = "Hello Master"}
+    |> Razor.masterPage "masterPage.html" { Master = "Hello Master"}
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "Hello Master<h1>Hello One</h1><br/><h1>Hi Two</h1>"
@@ -55,7 +55,7 @@ let ``Master page using nested master should compile with filled sections`` () =
                     ] |> Razor.nested "nestedMasterPage.html" {Nested = "Hi Nested"});
     ]
      
-    |> Razor.masterPage HTTP_200 "masterPage.html" { Master = "Hello Master"}
+    |> Razor.masterPage "masterPage.html" { Master = "Hello Master"}
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "Hello Master<h1>Hello One</h1><br/>Hi Nested<h1>Hello Nested One</h1><hr/><h1>Hi Nested Two</h1>"
@@ -63,7 +63,7 @@ let ``Master page using nested master should compile with filled sections`` () =
 [<Test>]
 let ``Single page should compile localized`` () =
     Shaver.Localization.localizeCulture >> 
-    Razor.page HTTP_200 "pageLocalized.html" { Master = "Hello Razor"}
+    Razor.singlePage "pageLocalized.html" { Master = "Hello Razor"}
     |> runWithConfig
     |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None Localization.setSingleAcceptLanguageHeaders contentString
     |> should equal "<h1>Hello Razor</h1>Value for exact culture"

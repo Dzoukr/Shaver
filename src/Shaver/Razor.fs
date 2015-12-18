@@ -20,7 +20,6 @@ let mutable closeTag = "}}}"
 let private getPartialKey name = sprintf "%s%s%s" openTag name closeTag
 let private getResourceKey name value = sprintf "%s$:%s:%s%s" openTag name value closeTag
 
-
 let private replaceResources s =
     let regexString = (getResourceKey "(.+)" "(.+)").Replace("$","\$")
     let regex = new Regex(regexString, RegexOptions.Multiline)
@@ -70,15 +69,18 @@ let nested<'a> path (model:'a) (partials:(string * 'b) list)  =
         }
 
 /// Renders webpart with defined HttpCode, template and model
-let page<'a> code path (model : 'a) = 
+let singlePageWithCode<'a> code path (model : 'a) = 
     fun r ->
         async {
             let! content = partial path model r
             return! Response.response code (UTF8.bytes content) r
         }
 
+/// Renders webpart with defined template and model
+let singlePage<'a> = singlePageWithCode<'a> HTTP_200
+
 /// Renders webpart with defined HttpCode, template and model using partial renders
-let masterPage<'a> code path (model:'a) (partials:(string * 'b) list)  =
+let masterPageWithCode<'a> code path (model:'a) (partials:(string * 'b) list)  =
     fun r ->
         async {
             let mutable content = String.Empty
@@ -90,3 +92,6 @@ let masterPage<'a> code path (model:'a) (partials:(string * 'b) list)  =
                 ()
             return! Response.response code (UTF8.bytes content) r
         }
+
+/// Renders webpart with defined template and model using partial renders
+let masterPage<'a> = masterPageWithCode<'a> HTTP_200

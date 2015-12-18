@@ -1,4 +1,4 @@
-﻿module Localization
+﻿module Shaver.Tests.Localization
 
 open FsUnit
 open NUnit.Framework
