@@ -6,7 +6,7 @@
     <version>@build.number@</version>
     <authors>@authors@</authors>
     <owners>@authors@</owners>
-    <licenseUrl>http://github.com/dzoukr/Shaver/blob/master/LICENSE.md</licenseUrl>
+    <licenseUrl>http://github.com/dzoukr/Shaver/blob/master/LICENSE</licenseUrl>
     <projectUrl>http://github.com/dzoukr/Shaver</projectUrl>
     <iconUrl>https://avatars2.githubusercontent.com/u/851307?v=3&amp;s=64</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
