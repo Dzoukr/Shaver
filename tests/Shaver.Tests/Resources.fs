@@ -11,6 +11,12 @@ let ``Value from default resource should be read`` () =
     |> should equal (Some "Value for non-specified culture")
 
 [<Test>]
+let ``Value from default resource should be read when specified culture is the same as invariant`` () =
+    Shaver.Resources.folder <- "./"
+    Shaver.Resources.getValue "All" "Value" (Some(new CultureInfo("en-US")))
+    |> should equal (Some "Value for non-specified culture")
+
+[<Test>]
 let ``Value from default resource for non-existent culture should be read`` () =
     Shaver.Resources.folder <- "./"
     Shaver.Resources.getValue "All" "Value" (Some (new CultureInfo("fr")))

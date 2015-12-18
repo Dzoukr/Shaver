@@ -4,20 +4,17 @@ open FsUnit
 open NUnit.Framework
 open Suave
 open Suave.Http
-open Suave.Web
 open Suave.Types
 open Suave.Http
 open Suave.Testing
-open Suave.Razor
 open Suave.Http.Successful
 open System.Net.Http.Headers
 open System.Net.Http
-open Shaver.Tests.Razor
-open System
 open System.Net
+open Shaver.Tests.Setup
 
 
-let private setSingleAcceptLanguageHeaders (r : HttpRequestMessage) =
+let setSingleAcceptLanguageHeaders (r : HttpRequestMessage) =
     r.Headers.AcceptLanguage.Add(new StringWithQualityHeaderValue("cs-CZ"))
     r
 

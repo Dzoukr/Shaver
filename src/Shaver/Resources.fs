@@ -66,7 +66,7 @@ let private getClosest culture tuples =
             | false when tuples.Length > 0 -> Some(tuples.[0])
             | false -> None
 
-    
+/// Gets value from specified resource (JSON file) for defined culture    
 let getValue (resource:string) (value:string) (culture:CultureInfo option) =
     let langFiles = 
         memoize scanFiles folder

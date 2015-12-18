@@ -8,6 +8,8 @@ open Suave.Http.Files
 open Suave.Utils
 open Suave.Razor
 open RazorEngine.Templating
+open System.Globalization
+open System.Threading
 
 /// Opening tag, default value = {{{
 let mutable openTag = "{{{"
@@ -16,6 +18,25 @@ let mutable openTag = "{{{"
 let mutable closeTag = "}}}"
 
 let private getPartialKey name = sprintf "%s%s%s" openTag name closeTag
+let private getResourceKey name value = sprintf "%s$:%s:%s%s" openTag name value closeTag
+
+
+let private replaceResources s =
+    let regexString = (getResourceKey "(.+)" "(.+)").Replace("$","\$")
+    let regex = new Regex(regexString, RegexOptions.Multiline)
+    let mutable result = s
+    for regMatch in regex.Matches(s) do
+        match regMatch.Success with
+        | true -> 
+            let name = regMatch.Groups.[1].Value
+            let value = regMatch.Groups.[2].Value
+            match Resources.getValue name value (Some(Thread.CurrentThread.CurrentUICulture)) with
+            | Some(replaceValue) -> 
+                let replaceKey = getResourceKey name value
+                result <- result.Replace(replaceKey, replaceValue.ToString())
+            | None -> ()
+        | false -> ()
+    result
 
 /// Renders partial content as empty string
 let empty<'a> = 
@@ -31,7 +52,7 @@ let partial<'a> path (model : 'a) =
             let templatePath = resolvePath r.runtime.homeDirectory path
             let! writeTime, razorTemplate = loadTemplateCached templatePath
             let cacheKey = writeTime.Ticks.ToString() + "_" + templatePath
-            return razorService.RunCompile(razorTemplate, cacheKey, typeof<'a>, model)
+            return razorService.RunCompile(razorTemplate, cacheKey, typeof<'a>, model) |> replaceResources
         }
 
 /// Renders nested content

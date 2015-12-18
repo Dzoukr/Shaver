@@ -3,19 +3,12 @@
 open FsUnit
 open NUnit.Framework
 open Suave
-open Suave.Http
-open Suave.Web
 open Suave.Types
-open Suave.Http
 open Suave.Testing
-open Suave.Razor
-open Suave.Http.Successful
 open Shaver
-open System
 open System.IO
-
-let path = Uri(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)).AbsolutePath.Replace("/","\\")
-let runWithConfig = runWith { defaultConfig with homeFolder = Some(path) }
+open System.Net
+open Shaver.Tests.Setup
 
 type ModelMaster = { Master : string }
 type ModelNested = { Nested : string }
@@ -66,3 +59,11 @@ let ``Master page using nested master should compile with filled sections`` () =
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "Hello Master<h1>Hello One</h1><br/>Hi Nested<h1>Hello Nested One</h1><hr/><h1>Hi Nested Two</h1>"
+
+[<Test>]
+let ``Single page should compile localized`` () =
+    Shaver.Localization.localizeCulture >> 
+    Razor.page HTTP_200 "pageLocalized.html" { Master = "Hello Razor"}
+    |> runWithConfig
+    |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None Localization.setSingleAcceptLanguageHeaders contentString
+    |> should equal "<h1>Hello Razor</h1>Value for exact culture"

@@ -46,9 +46,9 @@
     <None Include="paket.references" />
     <None Include="paket.dependencies" />
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Razor.fs" />
     <Compile Include="Localization.fs" />
     <Compile Include="Resources.fs" />
+    <Compile Include="Razor.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
