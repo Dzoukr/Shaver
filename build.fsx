@@ -22,9 +22,12 @@ let nugetBinDir = "./nuget/bin/"
 let project = "Shaver"
 let title = "Shaver"
 let authors = ["Roman Provaznik"]
-let summary = "Lightweight templating library for Suave.io"
+let summary = "Lightweight library for Suave.io web server using Razor engine adding some extra features like
+  template composing, custom return codes or localization resources support"
 let description = """
-  FILL ME"""
+ Shaver is built on top of the RazorEngine and provides some extra features like
+ template composing, setting custom return codes, localization resources support or
+ server thread auto-localization by client Accept-Language header."""
 let tags = "F# fsharp suave razor templating http web localization"
 
 // Read release notes & version info from RELEASE_NOTES.md
