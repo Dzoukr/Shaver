@@ -50,9 +50,9 @@ let ``Master page using nested master should compile with filled sections`` () =
     [    
         ("SectionOne", Razor.partial "partialOne.html" { One = "Hello One" });
         ("SectionTwo",
-                    [("NestedOne", Razor.partial "partialOne.html" { One = "Hello Nested One" });
-                     ("NestedTwo", Razor.partial "partialTwo.html" { Two = "Hi Nested Two" })
-                    ] |> Razor.nested "nestedMasterPage.html" {Nested = "Hi Nested"});
+            [("NestedOne", Razor.partial "partialOne.html" { One = "Hello Nested One" });
+                ("NestedTwo", Razor.partial "partialTwo.html" { Two = "Hi Nested Two" })
+            ] |> Razor.nested "nestedMasterPage.html" {Nested = "Hi Nested"});
     ]
      
     |> Razor.masterPage "masterPage.html" { Master = "Hello Master"}
