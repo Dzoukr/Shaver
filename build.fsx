@@ -36,7 +36,7 @@ let release = File.ReadLines "RELEASE_NOTES.md" |> ReleaseNotesHelper.parseRelea
 // Targets
 Target "?" (fun _ ->
     printfn " *********************************************************"
-    printfn " *        Avaliable options (call 'build <Targer>')      *"
+    printfn " *        Avaliable options (call 'build <Target>')      *"
     printfn " *********************************************************"
     printfn " [Build]"
     printfn "  > BuildApp"
@@ -47,6 +47,9 @@ Target "?" (fun _ ->
     printfn " "
     printfn " [Release]"
     printfn "  > Nuget"
+    printfn " "
+    printfn " [Help]"
+    printfn "  > ?"
     printfn " "
     printfn " *********************************************************"
 )
