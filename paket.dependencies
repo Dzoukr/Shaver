@@ -1,5 +1,11 @@
-﻿source http://nuget.org/api/v2
+source http://nuget.org/api/v2
 
 nuget FAKE
-nuget NUnit.Runners
+nuget FsUnit
+nuget NUnit 2.6.4
+nuget NUnit.Runners 2.6.4
 nuget Nuget.CommandLine
+nuget Suave
+nuget Suave.Razor
+nuget FSharp.Data
+nuget Suave.Testing

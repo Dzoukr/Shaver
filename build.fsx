@@ -6,8 +6,6 @@ open System.IO
 open Fake 
 open Fake.AssemblyInfoFile
 
-RestorePackages()
-
 // Directories
 let buildAppDir = "./build/app/"
 let buildTestDir = "./build/tests/"
@@ -41,9 +39,7 @@ Target "?" (fun _ ->
     printfn " [Build]"
     printfn "  > BuildApp"
     printfn "  > BuildTests"
-    printfn " "
-    printfn " [Tests]"
-    printfn "  > RunTests"
+    printfn "  > BuildWithTests"
     printfn " "
     printfn " [Release]"
     printfn "  > Nuget"
@@ -120,7 +116,7 @@ Target "BuildTests" (fun _ ->
       |> Log "TestBuild-Output: "
 )
 
-Target "RunTests" (fun _ ->
+Target "BuildWithTests" (fun _ ->
     !! (buildTestDir + "/Shaver.Tests.dll")
       |> NUnit (fun p ->
           {p with
@@ -132,7 +128,7 @@ Target "RunTests" (fun _ ->
 // Dependencies
 "CleanApp" ==> "AssemblyInfo" ==> "BuildApp"
 "CleanTests" ==> "BuildTests"
-"BuildApp"  ==> "BuildTests"  ==> "RunTests"
+"BuildApp"  ==> "BuildTests"  ==> "BuildWithTests"
 "CleanNugetBin" ==> "BuildApp" ==> "Nuget"
 
 // start build

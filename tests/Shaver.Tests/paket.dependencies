@@ -1,4 +1,0 @@
-source https://nuget.org/api/v2
-nuget FsUnit
-nuget Suave.Razor
-nuget Suave.Testing

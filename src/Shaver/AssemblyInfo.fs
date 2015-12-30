@@ -3,8 +3,7 @@ open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("Shaver")>]
 [<assembly: AssemblyProductAttribute("Shaver")>]
-[<assembly: AssemblyDescriptionAttribute("Lightweight library for Suave.io web server using Razor engine adding some extra features like
-  template composing, custom return codes or localization resources support")>]
+[<assembly: AssemblyDescriptionAttribute("Lightweight F# library for Suave.io web server using Razor engine adding some extra features like template composing, custom return codes or localization resources support.")>]
 [<assembly: AssemblyVersionAttribute("1.0.0")>]
 [<assembly: AssemblyFileVersionAttribute("1.0.0")>]
 do ()
