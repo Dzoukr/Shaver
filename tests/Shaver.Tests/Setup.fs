@@ -6,6 +6,6 @@ open System.IO
 open Shaver
 open Suave.Web
 
-let path = Uri(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)).AbsolutePath.Replace("/","\\")
+let path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
 let runWithConfig = runWith { defaultConfig with homeFolder = Some(path) }
 Resources.folder <- "."
