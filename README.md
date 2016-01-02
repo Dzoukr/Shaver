@@ -1,3 +1,5 @@
+<img src="https://api.travis-ci.org/Dzoukr/Shaver.svg" alt="Shaver" />
+
 # Shaver
 Shaver is lightweight library for [Suave.io](http://suave.io) web server, built on top of the [Razor Engine](https://github.com/Antaris/RazorEngine) and provides some extra features like template composing, setting custom return codes, localization resources support or server thread auto-localization by client Accept-Language header.
 
