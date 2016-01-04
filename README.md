@@ -107,11 +107,7 @@ Shaver library provides functionality to enable auto-localization by parsing `Ac
 #### Current UI culture
 To set current culture (`System.Threading.Thread.CurrentThread.CurrentUICulture`) use `localizeUICulture` function as shown in example below:
 
-    open Suave
-    open Suave.Http
-    open Suave.Http.Applicatives
-    open Suave.Http.Successful
-    open Suave.Web
+    ...
     open Shaver.Razor
     open Shaver.Localization
 
