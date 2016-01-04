@@ -1,7 +1,6 @@
 ﻿module Shaver.Localization
 
 open Suave
-open Suave.Types
 open System.Globalization
 
 /// Gets list of languages defined in accept-language header

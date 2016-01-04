@@ -5,7 +5,7 @@ nuget FsUnit
 nuget NUnit 2.6.4
 nuget NUnit.Runners 2.6.4
 nuget Nuget.CommandLine
+nuget RazorEngine
 nuget Suave
-nuget Suave.Razor
 nuget FSharp.Data
 nuget Suave.Testing

@@ -4,14 +4,12 @@ open FsUnit
 open NUnit.Framework
 open Suave
 open Suave.Http
-open Suave.Types
-open Suave.Http
 open Suave.Testing
-open Suave.Http.Successful
 open System.Net.Http.Headers
 open System.Net.Http
 open System.Net
 open Shaver.Tests.Setup
+open Suave.Successful
 
 
 let setSingleAcceptLanguageHeaders (r : HttpRequestMessage) =

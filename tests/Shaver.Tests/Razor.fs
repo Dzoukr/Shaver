@@ -3,7 +3,6 @@
 open FsUnit
 open NUnit.Framework
 open Suave
-open Suave.Types
 open Suave.Testing
 open Shaver
 open System.IO

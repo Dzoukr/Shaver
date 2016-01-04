@@ -118,7 +118,7 @@ To set current culture (`System.Threading.Thread.CurrentThread.CurrentUICulture`
     let webPart =
       localizeUICulture >> // <-- Setting current UI culture
       choose [
-        path "/" >>= singlePage "SinglePage.html" { Message = "Hello Shaver"}
+        path "/" >=> singlePage "SinglePage.html" { Message = "Hello Shaver"}
       ]
     
     startWebServer defaultConfig webPart
@@ -129,7 +129,7 @@ If you want to change current culture, use `localizeCulture` instead:
     ...
     localizeCulture >> // <-- Setting current culture
       choose [
-        path "/" >>= singlePage "SinglePage.html" { Message = "Hello Shaver"}
+        path "/" >=> singlePage "SinglePage.html" { Message = "Hello Shaver"}
       ]
     ...
     

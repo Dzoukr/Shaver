@@ -75,10 +75,10 @@ Target "Nuget" <| fun () ->
             Files = nugetFiles |> List.map (fun f -> ("bin/" + f, Some("lib/net45"), None))
             Dependencies =
             [
-                "Suave", GetPackageVersion (appSrcDir + "./packages") "Suave"
-                "Suave.Razor", GetPackageVersion (appSrcDir + "./packages") "Suave.Razor"
-                "FSharp.Data", GetPackageVersion (appSrcDir + "./packages") "FSharp.Data"
-                "FSharp.Core", GetPackageVersion (appSrcDir + "./packages") "FSharp.Core"
+                "Suave", GetPackageVersion ("./packages") "Suave"
+                "RazorEngine", GetPackageVersion ("./packages") "RazorEngine"
+                "FSharp.Data", GetPackageVersion ("./packages") "FSharp.Data"
+                "FSharp.Core", GetPackageVersion ("./packages") "FSharp.Core"
             ]
         })
         "nuget/Shaver.nuspec"
