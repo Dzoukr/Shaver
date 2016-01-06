@@ -14,20 +14,31 @@ let getAcceptedLanguages (request:HttpRequest) =
             | false -> None
     | _ -> None
 
+let private tryGetCultureInfo (name:string) =
+    try
+        let culture = new CultureInfo(name)
+        Some(culture)
+    with
+    | _ -> None
+
 /// Localizes thread culture by first language defined in accept-language header
 let localizeCulture = (fun (ctx:HttpContext) -> 
-    let langs = getAcceptedLanguages ctx.request
-    match langs with
-    | Some(l) -> CultureInfo.DefaultThreadCurrentCulture <- new CultureInfo(l.[0])
-    | None -> ()
+    match getAcceptedLanguages ctx.request with
+    | Some(l) -> 
+        match tryGetCultureInfo l.[0] with
+        | Some(culture) -> CultureInfo.DefaultThreadCurrentCulture <- culture
+        | _ -> ()
+    | _ -> ()
     ctx
     )
 
 /// Localizes thread UI culture by first language defined in accept-language header
 let localizeUICulture = (fun (ctx:HttpContext) -> 
-    let langs = getAcceptedLanguages ctx.request
-    match langs with
-    | Some(l) -> CultureInfo.DefaultThreadCurrentUICulture <- new CultureInfo(l.[0])
-    | None -> ()
+    match getAcceptedLanguages ctx.request with
+    | Some(l) -> 
+        match tryGetCultureInfo l.[0] with
+        | Some(culture) -> CultureInfo.DefaultThreadCurrentUICulture <- culture
+        | _ -> ()
+    | _ -> ()
     ctx
     )

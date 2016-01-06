@@ -61,8 +61,8 @@ let ``Master page using nested master should compile with filled sections`` () =
 
 [<Test>]
 let ``Single page should compile localized`` () =
-    Shaver.Localization.localizeCulture >> 
+    Shaver.Localization.localizeUICulture >> 
     Razor.singlePage "pageLocalized.html" { Master = "Hello Razor"}
     |> runWithConfig
-    |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None Localization.setSingleAcceptLanguageHeaders contentString
+    |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None (Localization.setSingleAcceptLanguageHeaders "cs-CZ") contentString
     |> should equal "<h1>Hello Razor</h1>Value for exact culture"
