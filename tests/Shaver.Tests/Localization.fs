@@ -12,6 +12,8 @@ open Shaver.Tests.Setup
 open Suave.Successful
 open System.Globalization
 
+
+
 let setWrongAcceptedLanguage (r : HttpRequestMessage) =  
     r.Headers.AcceptLanguage.Add(new StringWithQualityHeaderValue("null"))
     r
@@ -42,12 +44,12 @@ let ``List of accepted languages should be parsed from context`` () =
 [<Test>]
 let ``Calling localizeUICulture should change thread UI culture`` () =
     let ``assert`` = fun (x) ->
-        System.Threading.Thread.CurrentThread.CurrentUICulture.Name |> should equal "jp-JP"
+        System.Threading.Thread.CurrentThread.CurrentUICulture.Name |> should equal "sk-SK"
         x
     
     Shaver.Localization.localizeUICulture >> ``assert`` >> (OK "Hi")
     |> runWithConfig
-    |> reqResp HttpMethod.GET "/"  "" None None DecompressionMethods.None (setSingleAcceptLanguageHeaders "jp-JP") contentString
+    |> reqResp HttpMethod.GET "/"  "" None None DecompressionMethods.None (setSingleAcceptLanguageHeaders "sk-SK") contentString
     |> ignore
     
 
