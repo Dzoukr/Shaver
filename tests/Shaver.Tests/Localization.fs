@@ -28,10 +28,11 @@ let private setMoreAcceptLanguageHeaders (r : HttpRequestMessage) =
 
 [<Test>]
 let ``List of accepted languages should be parsed from context`` () =
-    let ``assert`` x =
+    let ``assert`` = fun (x) ->
         Shaver.Localization.getAcceptedLanguages(x.request) 
         |> should equal (Some [|"cs-CZ"; "en"; "ru"|])
         x
+
     ``assert`` >> (OK "Hi")
     |> runWithConfig
     |> reqResp HttpMethod.GET "/"  "" None None DecompressionMethods.None setMoreAcceptLanguageHeaders contentString
@@ -40,7 +41,7 @@ let ``List of accepted languages should be parsed from context`` () =
 
 [<Test>]
 let ``Calling localizeUICulture should change thread UI culture`` () =
-    let ``assert`` x =
+    let ``assert`` = fun (x) ->
         System.Threading.Thread.CurrentThread.CurrentUICulture.Name |> should equal "jp-JP"
         x
     
@@ -52,7 +53,7 @@ let ``Calling localizeUICulture should change thread UI culture`` () =
 
 [<Test>]
 let ``Calling localizeCulture should change thread culture`` () =
-    let ``assert`` x = 
+    let ``assert`` = fun (x) -> 
         System.Threading.Thread.CurrentThread.CurrentCulture.Name |> should equal "ru-RU"
         x
     
@@ -65,11 +66,11 @@ let ``Calling localizeCulture should change thread culture`` () =
 let ``Calling localizeCulture with wrong header should not change anything`` () =
     let mutable currentCulture = CultureInfo.InvariantCulture
     
-    let storeCurrentCulture x =
+    let storeCurrentCulture = fun (x) ->
         currentCulture <- System.Threading.Thread.CurrentThread.CurrentCulture
         x
 
-    let ``assert`` x = 
+    let ``assert`` = fun (x) ->
         System.Threading.Thread.CurrentThread.CurrentCulture.Name |> should equal currentCulture.Name
         x
     
