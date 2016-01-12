@@ -2,12 +2,8 @@
 
 open System
 open System.Text.RegularExpressions
-open Suave.Http
 open Suave.Utils.AsyncExtensions
-open RazorEngine.Templating
-open System.Globalization
 open System.Threading
-open Suave.Files
 open Suave
 open System.IO
 open RazorEngine.Configuration
@@ -39,7 +35,6 @@ let private replaceResources s =
         | false -> ()
     result
 
-
 let private loadTemplate templatePath =
     async {
       let writeTime = File.GetLastWriteTime(templatePath)
@@ -49,56 +44,7 @@ let private loadTemplate templatePath =
       return writeTime, razorTemplate
     }
 
-let private memoize isValid f =
-    let cache = Collections.Concurrent.ConcurrentDictionary<_ , _>()
-    fun x ->
-      async {
-        match cache.TryGetValue(x) with
-        | true, res when isValid x res -> return res
-        | _ ->
-            let! res = f x
-            cache.[x] <- res
-            return res
-      }
-
-let private loadTemplateCached = 
-    loadTemplate |> memoize (fun templatePath (lastWrite, _) -> File.GetLastWriteTime(templatePath) <= lastWrite )
-
-
-type private TemplateSource(templatePath:string) =
-    interface ITemplateSource with
-        member x.GetTemplateReader() = new StreamReader(templatePath) :> TextReader
-        member x.Template =
-            let template = async {
-                let! _,template = loadTemplateCached templatePath
-                return template.ToString()
-            }
-            template |> Async.RunSynchronously
-            
-        member x.TemplateFile = templatePath
-
-type private TemplateManager(basePath) =
-    let mutable dynamicTemplates = System.Collections.Concurrent.ConcurrentDictionary()
-    let x = fun a b -> (a +b+ 2)
-    interface ITemplateManager with
-        member x.AddDynamic(key, source) =
-            dynamicTemplates.AddOrUpdate(key, source, (fun _ s -> s)) |> ignore
-        member x.GetKey(name, resolveType, context) = NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey
-        member x.Resolve(key) =
-            match dynamicTemplates.TryGetValue(key) with
-            | (true, template) -> template
-            | _ ->           
-                let templatePath = resolvePath basePath key.Name
-                TemplateSource(templatePath) :> ITemplateSource
-
-let serviceConfiguration = TemplateServiceConfiguration()
-serviceConfiguration.DisableTempFileLocking <- true
-serviceConfiguration.CachingProvider <- new DefaultCachingProvider(fun t -> ())
-
-let razorService basePath =
-    serviceConfiguration.TemplateManager <- TemplateManager(basePath)
-    RazorEngineService.Create(serviceConfiguration)
-
+let private cachingProvider = new InvalidatingCachingProvider(fun t -> ())
 
 /// Renders partial content as empty string
 let empty<'a> = 
@@ -108,13 +54,23 @@ let empty<'a> =
         }
 
 /// Renders partial content
-let partial<'a> path (model : 'a) =
+let partial<'a> (path:string) (model : 'a) =
     fun r ->
         async {
-            let templatePath = resolvePath r.runtime.homeDirectory path
-            let! writeTime, razorTemplate = loadTemplateCached templatePath
-            let cacheKey = writeTime.Ticks.ToString() + "_" + templatePath
-            return razorService(r.runtime.homeDirectory).RunCompile(razorTemplate.ToString(), cacheKey, typeof<'a>, model) |> replaceResources
+            let serviceConfiguration = TemplateServiceConfiguration()
+            serviceConfiguration.DisableTempFileLocking <- true
+            serviceConfiguration.CachingProvider <- cachingProvider
+            serviceConfiguration.TemplateManager <-
+              { new ITemplateManager with
+                  member x.AddDynamic(_, _) = failwith "not implemented"
+                  member x.Resolve key =
+                    let _, readTemplate = loadTemplate key.Name |> Async.RunSynchronously
+                    LoadedTemplateSource(readTemplate, key.Name) :> _
+                  member x.GetKey (name, resolveType, context) =
+                    NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey }
+
+            let razorService = RazorEngineService.Create(serviceConfiguration)
+            return razorService.RunCompile(path, typeof<'a>, model) |> replaceResources
         }
 
 /// Renders nested content
