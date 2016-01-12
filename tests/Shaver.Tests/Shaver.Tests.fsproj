@@ -58,6 +58,9 @@
   </Target>
   -->
   <ItemGroup>
+    <None Include="included.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="paket.references" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Setup.fs" />
@@ -93,6 +96,9 @@
     </None>
     <Content Include="App.config" />
     <None Include="page.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="pageWithInclude.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

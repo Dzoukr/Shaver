@@ -64,11 +64,41 @@ let private memoize isValid f =
 let private loadTemplateCached = 
     loadTemplate |> memoize (fun templatePath (lastWrite, _) -> File.GetLastWriteTime(templatePath) <= lastWrite )
 
+
+type private TemplateSource(templatePath:string) =
+    interface ITemplateSource with
+        member x.GetTemplateReader() = new StreamReader(templatePath) :> TextReader
+        member x.Template =
+            let template = async {
+                let! _,template = loadTemplateCached templatePath
+                return template.ToString()
+            }
+            template |> Async.RunSynchronously
+            
+        member x.TemplateFile = templatePath
+
+type private TemplateManager(basePath) =
+    let mutable dynamicTemplates = System.Collections.Concurrent.ConcurrentDictionary()
+    let x = fun a b -> (a +b+ 2)
+    interface ITemplateManager with
+        member x.AddDynamic(key, source) =
+            dynamicTemplates.AddOrUpdate(key, source, (fun _ s -> s)) |> ignore
+        member x.GetKey(name, resolveType, context) = NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey
+        member x.Resolve(key) =
+            match dynamicTemplates.TryGetValue(key) with
+            | (true, template) -> template
+            | _ ->           
+                let templatePath = resolvePath basePath key.Name
+                TemplateSource(templatePath) :> ITemplateSource
+
 let serviceConfiguration = TemplateServiceConfiguration()
 serviceConfiguration.DisableTempFileLocking <- true
 serviceConfiguration.CachingProvider <- new DefaultCachingProvider(fun t -> ())
 
-let razorService = RazorEngineService.Create(serviceConfiguration)
+let razorService basePath =
+    serviceConfiguration.TemplateManager <- TemplateManager(basePath)
+    RazorEngineService.Create(serviceConfiguration)
+
 
 /// Renders partial content as empty string
 let empty<'a> = 
@@ -84,7 +114,7 @@ let partial<'a> path (model : 'a) =
             let templatePath = resolvePath r.runtime.homeDirectory path
             let! writeTime, razorTemplate = loadTemplateCached templatePath
             let cacheKey = writeTime.Ticks.ToString() + "_" + templatePath
-            return razorService.RunCompile(razorTemplate.ToString(), cacheKey, typeof<'a>, model) |> replaceResources
+            return razorService(r.runtime.homeDirectory).RunCompile(razorTemplate.ToString(), cacheKey, typeof<'a>, model) |> replaceResources
         }
 
 /// Renders nested content

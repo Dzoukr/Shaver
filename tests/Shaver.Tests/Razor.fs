@@ -5,7 +5,6 @@ open NUnit.Framework
 open Suave
 open Suave.Testing
 open Shaver
-open System.IO
 open System.Net
 open Shaver.Tests.Setup
 
@@ -13,6 +12,10 @@ type ModelMaster = { Master : string }
 type ModelNested = { Nested : string }
 type ModelOne = { One : string }
 type ModelTwo = { Two : string }
+type TwoLevelModel = {
+    Top : ModelMaster;
+    Inner : ModelNested;
+}
 
 [<Test>]
 let ``Single page should compile with model data`` () =
@@ -66,3 +69,11 @@ let ``Single page should compile localized`` () =
     |> runWithConfig
     |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None (Localization.setSingleAcceptLanguageHeaders "cs-CZ") contentString
     |> should equal "<h1>Hello Razor</h1>Value for exact culture"
+
+[<Test>]
+let ``Included page should be compiled`` () =
+    Razor.singlePage "pageWithInclude.html" { Top = {Master = "Hello Master"}; Inner = { Nested = "Hello Inner"}}
+    |> runWithConfig
+    |> req HttpMethod.GET "/" None
+    |> should equal "<h1>Hello Master</h1><span>Included content Hello Inner</span>"
+
