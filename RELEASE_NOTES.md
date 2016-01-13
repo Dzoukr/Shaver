@@ -1,3 +1,6 @@
+#### 1.2.0 - January 13 2016
+* Added support for advanced Razor syntax (RenderBody, Include, DefineSection, etc...)
+
 #### 1.1.1 - January 06 2016
 * Bugfix: An exception thrown for localize(UI)Culture function with incorrect value in Accept-language header
 

@@ -72,8 +72,16 @@ let ``Single page should compile localized`` () =
 
 [<Test>]
 let ``Included page should be compiled`` () =
-    Razor.singlePage "pageWithInclude.html" { Top = {Master = "Hello Master"}; Inner = { Nested = "Hello Inner"}}
+    Razor.singlePage "razorInclude.html" { Top = {Master = "Hello Master"}; Inner = { Nested = "Hello Inner"}}
     |> runWithConfig
     |> req HttpMethod.GET "/" None
     |> should equal "<h1>Hello Master</h1><span>Included content Hello Inner</span>"
 
+[<Test>]
+let ``Page using Razor Layout and Razor Section should be compiled`` () =
+    Razor.singlePage "razorSection.html" { Top = {Master = "Hello Master"}; Inner = { Nested = "Hello Inner"}}
+    |> runWithConfig
+    |> req HttpMethod.GET "/" None
+    |> should equal """<p>
+Hello Master
+</p><section><span>Hello Inner</span></section>"""
