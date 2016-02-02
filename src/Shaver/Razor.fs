@@ -46,6 +46,22 @@ let private loadTemplate templatePath =
 
 let private cachingProvider = new InvalidatingCachingProvider(fun t -> ())
 
+let serviceConfiguration = TemplateServiceConfiguration()
+let private templateManager = 
+    {   new ITemplateManager with
+        member x.AddDynamic(_, _) = failwith "not implemented"
+        member x.Resolve key =
+            let _, readTemplate = loadTemplate key.Name |> Async.RunSynchronously
+            LoadedTemplateSource(readTemplate, key.Name) :> _
+        member x.GetKey (name, resolveType, context) =
+            NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey 
+    }
+
+serviceConfiguration.DisableTempFileLocking <- true
+serviceConfiguration.CachingProvider <- cachingProvider
+serviceConfiguration.TemplateManager <- templateManager
+let razorService = RazorEngineService.Create(serviceConfiguration)
+
 /// Renders partial content as empty string
 let empty<'a> = 
     fun _ -> 
@@ -57,19 +73,6 @@ let empty<'a> =
 let partial<'a> (path:string) (model : 'a) =
     fun r ->
         async {
-            let serviceConfiguration = TemplateServiceConfiguration()
-            serviceConfiguration.DisableTempFileLocking <- true
-            serviceConfiguration.CachingProvider <- cachingProvider
-            serviceConfiguration.TemplateManager <-
-              { new ITemplateManager with
-                  member x.AddDynamic(_, _) = failwith "not implemented"
-                  member x.Resolve key =
-                    let _, readTemplate = loadTemplate key.Name |> Async.RunSynchronously
-                    LoadedTemplateSource(readTemplate, key.Name) :> _
-                  member x.GetKey (name, resolveType, context) =
-                    NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey }
-
-            let razorService = RazorEngineService.Create(serviceConfiguration)
             return razorService.RunCompile(path, typeof<'a>, model) |> replaceResources
         }
 
