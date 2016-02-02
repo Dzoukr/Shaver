@@ -19,7 +19,7 @@ let private getPartialKey name = sprintf "%s%s%s" openTag name closeTag
 let private getResourceKey name value = sprintf "%s$:%s:%s%s" openTag name value closeTag
 
 let private replaceResources s =
-    let regexString = (getResourceKey "(.+)" "(.+)").Replace("$","\$")
+    let regexString = (getResourceKey "(.+?)" "(.+?)").Replace("$","\$")
     let regex = new Regex(regexString, RegexOptions.Multiline)
     let mutable result = s
     for regMatch in regex.Matches(s) do
@@ -44,9 +44,6 @@ let private loadTemplate templatePath =
       return writeTime, razorTemplate
     }
 
-let private cachingProvider = new InvalidatingCachingProvider(fun t -> ())
-
-let serviceConfiguration = TemplateServiceConfiguration()
 let private templateManager = 
     {   new ITemplateManager with
         member x.AddDynamic(_, _) = failwith "not implemented"
@@ -57,10 +54,9 @@ let private templateManager =
             NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey 
     }
 
-serviceConfiguration.DisableTempFileLocking <- true
-serviceConfiguration.CachingProvider <- cachingProvider
+let private serviceConfiguration = TemplateServiceConfiguration()
 serviceConfiguration.TemplateManager <- templateManager
-let razorService = RazorEngineService.Create(serviceConfiguration)
+let private razorService = RazorEngineService.Create(serviceConfiguration)
 
 /// Renders partial content as empty string
 let empty<'a> = 

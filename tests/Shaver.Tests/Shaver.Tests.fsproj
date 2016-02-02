@@ -58,15 +58,15 @@
   </Target>
   -->
   <ItemGroup>
+    <None Include="pageWithMoreResources.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="paket.references" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Setup.fs" />
     <Compile Include="Localization.fs" />
     <Compile Include="Resources.fs" />
     <Compile Include="Razor.fs" />
-    <None Include="pageLocalized.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="partialOne.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -107,6 +107,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="App.config" />
+    <None Include="pageLocalized.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

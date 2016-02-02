@@ -1,3 +1,12 @@
+#### 1.2.2 - February 02 2016
+* Fixed bug in replacing multiple values
+* DisableTempFileLocking flag set to false
+* InvalidatingCachingProvider not used anymore
+
+#### 1.2.1 - February 02 2016
+* Fixed bug for memory leak
+* Upgrade to Suave 1.1.0
+
 #### 1.2.0 - January 13 2016
 * Added support for advanced Razor syntax (RenderBody, Include, DefineSection, etc...)
 

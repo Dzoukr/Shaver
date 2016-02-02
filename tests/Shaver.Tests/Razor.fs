@@ -71,6 +71,14 @@ let ``Single page should compile localized`` () =
     |> should equal "<h1>Hello Razor</h1>Value for exact culture"
 
 [<Test>]
+let ``Resources should be replaced more times`` () =
+    Shaver.Localization.localizeUICulture >> 
+    Razor.singlePage "pageWithMoreResources.html" null
+    |> runWithConfig
+    |> reqResp HttpMethod.POST "/"  "" None None DecompressionMethods.None (Localization.setSingleAcceptLanguageHeaders "cs-CZ") contentString
+    |> should equal "Value for exact cultureValue for exact culture"
+
+[<Test>]
 let ``Included page should be compiled`` () =
     Razor.singlePage "razorInclude.html" { Top = {Master = "Hello Master"}; Inner = { Nested = "Hello Inner"}}
     |> runWithConfig
