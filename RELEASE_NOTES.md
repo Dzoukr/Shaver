@@ -1,3 +1,8 @@
+#### 1.3.0 - February 11 2016
+* Based on performance tests, ResolvePathTemplateManager is used as default
+* Dependencies updated (RazorEngine, Suave)
+* CrossAppDomainCleanUp messages fixed
+
 #### 1.2.2 - February 02 2016
 * Fixed bug in replacing multiple values
 * DisableTempFileLocking flag set to false

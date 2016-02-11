@@ -2,10 +2,8 @@
 
 open System
 open System.Text.RegularExpressions
-open Suave.Utils.AsyncExtensions
 open System.Threading
 open Suave
-open System.IO
 open RazorEngine.Configuration
 open RazorEngine.Templating
 
@@ -35,27 +33,9 @@ let private replaceResources s =
         | false -> ()
     result
 
-let private loadTemplate templatePath =
-    async {
-      let writeTime = File.GetLastWriteTime(templatePath)
-      use file = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
-      use reader = new StreamReader(file)
-      let! razorTemplate = reader.ReadToEndAsync()
-      return writeTime, razorTemplate
-    }
-
-let private templateManager = 
-    {   new ITemplateManager with
-        member x.AddDynamic(_, _) = failwith "not implemented"
-        member x.Resolve key =
-            let _, readTemplate = loadTemplate key.Name |> Async.RunSynchronously
-            LoadedTemplateSource(readTemplate, key.Name) :> _
-        member x.GetKey (name, resolveType, context) =
-            NameOnlyTemplateKey(name, resolveType, context) :> ITemplateKey 
-    }
-
 let private serviceConfiguration = TemplateServiceConfiguration()
-serviceConfiguration.TemplateManager <- templateManager
+serviceConfiguration.CachingProvider <- new DefaultCachingProvider(fun _ -> ())
+serviceConfiguration.TemplateManager <- ResolvePathTemplateManager(["."])
 let private razorService = RazorEngineService.Create(serviceConfiguration)
 
 /// Renders partial content as empty string
