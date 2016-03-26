@@ -7,19 +7,13 @@ open System.IO
 open Fake 
 open Fake.AssemblyInfoFile
 
-// Directories
-let buildAppDir = "./build/app/"
-let buildTestDir = "./build/tests/"
-let appSrcDir = "./src/Shaver/"
-let testSrcDir = "./tests/Shaver.Tests/"
-let nugetBinDir = "./nuget/bin/"
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
 // --------------------------------------------------------------------------------------
 
-let project = "Shaver"
 let title = "Shaver"
+let project = "Shaver"
 let authors = ["Roman Provaznik"]
 let summary = "Lightweight F# library for Suave.io web server using Razor engine adding some extra features like template composing, custom return codes or localization resources support."
 let description = """Shaver is lightweight F# library for Suave.io web server built on the top of the Razor 
@@ -30,6 +24,12 @@ let tags = "F# fsharp suave razor templating http web localization"
 // Read release notes & version info from RELEASE_NOTES.md
 let release = File.ReadLines "RELEASE_NOTES.md" |> ReleaseNotesHelper.parseReleaseNotes
 
+// Directories
+let buildAppDir = "./build/app/"
+let buildTestDir = "./build/tests/"
+let appSrcDir = sprintf "./src/%s/" title
+let testSrcDir = sprintf "./tests/%s.Tests/" title
+let nugetBinDir = "./nuget/bin/"
 
 
 // Targets
@@ -40,7 +40,9 @@ Target "?" (fun _ ->
     printfn " [Build]"
     printfn "  > BuildApp"
     printfn "  > BuildTests"
-    printfn "  > BuildWithTests"
+    printfn " "
+    printfn " [Run]"
+    printfn "  > RunTests"
     printfn " "
     printfn " [Release]"
     printfn "  > Nuget"
@@ -117,8 +119,8 @@ Target "BuildTests" (fun _ ->
       |> Log "TestBuild-Output: "
 )
 
-Target "BuildWithTests" (fun _ ->
-    !! (buildTestDir + "/Shaver.Tests.dll")
+Target "RunTests" (fun _ ->
+    !! (buildTestDir + sprintf "/%s.Tests.dll" title)
       |> NUnit (fun p ->
           {p with
              DisableShadowCopy = true;
@@ -129,7 +131,7 @@ Target "BuildWithTests" (fun _ ->
 // Dependencies
 "CleanApp" ==> "AssemblyInfo" ==> "BuildApp"
 "CleanTests" ==> "BuildTests"
-"BuildApp"  ==> "BuildTests"  ==> "BuildWithTests"
+"BuildApp"  ==> "BuildTests"  ==> "RunTests"
 "CleanNugetBin" ==> "BuildApp" ==> "Nuget"
 
 // start build
