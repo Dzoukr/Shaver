@@ -9,6 +9,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Shaver.Tests", "Tests\Shave
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6593E037-7E15-4F68-A192-220B2D7902F8}"
 	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
 		build.fsx = build.fsx
 	EndProjectSection
 EndProject
