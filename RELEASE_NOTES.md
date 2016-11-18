@@ -1,3 +1,6 @@
+#### 1.3.1 - November 18 2016
+* Update to the latest packages
+
 #### 1.3.0 - February 11 2016
 * Based on performance tests, ResolvePathTemplateManager is used as default
 * Dependencies updated (RazorEngine, Suave)
